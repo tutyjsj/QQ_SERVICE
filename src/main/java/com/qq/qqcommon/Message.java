@@ -5,22 +5,26 @@ import java.io.Serializable;
 /**
  * 表示一个客户信息
  */
-public class Message implements Serializable {//序列号进行网络编程
+import java.io.Serializable;
 
-    //增加兼容性，可写可不写
+public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String sender;//发送者
-    private String getter;//接收者
-    private String content;//消息内容
-    private String sendTime;//发送时间
-    private String mesType;//消息类型[可以在接口定义消息类型]
+    private String sender;
+    private String getter;
+    private String content;
+    private String sendTime;
+    private String mesType;
 
-    //进行扩展 和文件相关的成员
+    // 文件相关属性
     private byte[] fileBytes;
     private int fileLen = 0;
-    private String dest; //将文件传输到哪里
-    private String src; //源文件路径
+    private String dest;
+    private String src;
+
+    // 添加分块传输需要的属性
+    private long fileSize;      // 文件总大小
+    private int bytesRead;      // 当前读取的字节数
 
     public byte[] getFileBytes() {
         return fileBytes;
@@ -92,5 +96,22 @@ public class Message implements Serializable {//序列号进行网络编程
 
     public void setSendTime(String sendTime) {
         this.sendTime = sendTime;
+    }
+
+    // 新添加的getter和setter方法
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public int getBytesRead() {
+        return bytesRead;
+    }
+
+    public void setBytesRead(int bytesRead) {
+        this.bytesRead = bytesRead;
     }
 }

@@ -9,7 +9,7 @@ import java.util.Iterator;
  * 该类用于管理和客户端通信的线程
  */
 public class ManageClientThreads {
-    private static final HashMap<String, ServerConnectClientThread> hm = new HashMap<>();
+    private static HashMap<String, ServerConnectClientThread> hm = new HashMap<>();
 
 
     //返回 hm
@@ -40,7 +40,7 @@ public class ManageClientThreads {
         Iterator<String> iterator = hm.keySet().iterator();
         String onlineUserList = "";
         while (iterator.hasNext()) {
-            onlineUserList += iterator.next() + " ";
+            onlineUserList += iterator.next().toString() + " ";
         }
         return  onlineUserList;
     }

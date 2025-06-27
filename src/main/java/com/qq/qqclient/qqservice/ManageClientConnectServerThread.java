@@ -9,7 +9,7 @@ import java.util.HashMap;
  */
 public class ManageClientConnectServerThread {
     //我们把多个线程放入一个HashMap集合，key 就是用户id, value 就是线程
-    private static final HashMap<String, ClientConnectServerThread> hm = new HashMap<>();
+    private static HashMap<String, ClientConnectServerThread> hm = new HashMap<>();
 
     //将某个线程加入到集合
     public static void addClientConnectServerThread(String userId, ClientConnectServerThread clientConnectServerThread) {
@@ -21,7 +21,6 @@ public class ManageClientConnectServerThread {
     }
 
 }
-
 //package com.qq.qqclient.qqservice;
 ////package com.qq.service.sevice;
 //import java.util.HashMap;

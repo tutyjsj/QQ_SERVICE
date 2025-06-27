@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QQ通信系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #0084ff;
+            --secondary: #1e1e1e;
+            --light-bg: #2d2d2d;
+            --dark-bg: #252526;
+            --text-light: #f0f0f0;
+            --text-gray: #b0b0b0;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            max-width: 1600px;
+            margin: 0 auto;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 登录页面样式 */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #0c0c0c 100%);
+        }
+
+        .login-box {
+            background-color: var(--light-bg);
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .login-title {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--text-light);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-login {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-login:hover {
+            background-color: #0070d8;
+        }
+
+        .btn-register {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-register:hover {
+            background-color: rgba(0, 132, 255, 0.1);
+        }
+
+        .btn-exit {
+            background-color: transparent;
+            color: var(--text-gray);
+            border: 1px solid #444;
+        }
+
+        .btn-exit:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* 主界面样式 */
+        .main-container {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* 顶部导航栏 */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background-color: var(--light-bg);
+            border-bottom: 1px solid #444;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .user-details h3 {
+            font-size: 1.1rem;
+            margin-bottom: 3px;
+        }
+
+        .user-details span {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* 左侧边栏 */
+        .sidebar {
+            width: 280px;
+            background-color: var(--light-bg);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #444;
+        }
+
+        .sidebar-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #444;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 20px;
+            border: none;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-gray);
+        }
+
+        .sidebar-tabs {
+            display: flex;
+            border-bottom: 1px solid #444;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .tab:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .user-list {
+            list-style: none;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            gap: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .user-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .user-item.active {
+            background-color: rgba(0, 132, 255, 0.2);
+        }
+
+        .user-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--success);
+        }
+
+        .user-status.offline {
+            background-color: var(--text-gray);
+        }
+
+        .user-item-info h4 {
+            font-size: 1rem;
+            margin-bottom: 3px;
+        }
+
+        .user-item-info p {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        /* 聊天区域 */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 15px 25px;
+            border-bottom: 1px solid #444;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background-color: var(--primary);
+            border-top-right-radius: 0;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background-color: var(--light-bg);
+            border-top-left-radius: 0;
+        }
+
+        .message-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .message-input-area {
+            padding: 15px;
+            border-top: 1px solid #444;
+        }
+
+        .message-input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 20px;
+            border: 1px solid #444;
+            background-color: var(--light-bg);
+            color: var(--text-light);
+            resize: none;
+            height: 45px;
+            max-height: 150px;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .send-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .send-button:hover {
+            background-color: #0070d8;
+        }
+
+        /* 功能区域 */
+        .function-area {
+            width: 300px;
+            background-color: var(--light-bg);
+            border-left: 1px solid #444;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .function-title {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #444;
+        }
+
+        .function-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .func-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            background-color: var(--dark-bg);
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: left;
+        }
+
+        .func-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .func-btn i {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        /* 文件传输区域 */
+        .file-transfer {
+            margin-top: 30px;
+        }
+
+        .file-list {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: var(--dark-bg);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-size: 0.9rem;
+            margin-bottom: 3px;
+        }
+
+        .file-size {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .function-area {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .sidebar-header h2, .user-item-info, .tab span {
+                display: none;
+            }
+
+            .user-item {
+                justify-content: center;
+            }
+
+            .search-container input {
+                padding: 10px;
+            }
+
+            .search-container i {
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 登录页面 -->
+<div class="login-container" id="loginContainer">
+    <div class="login-box">
+        <div class="logo">
+            <i class="fab fa-qq"></i>
+        </div>
+        <h1 class="login-title">QQ通信系统</h1>
+
+        <div class="input-group">
+            <label for="userId">用户账号</label>
+            <input type="text" id="userId" placeholder="请输入用户ID">
+        </div>
+
+        <div class="input-group">
+            <label for="password">密码</label>
+            <input type="password" id="password" placeholder="请输入密码">
+        </div>
+
+        <button class="btn btn-login" id="loginBtn">
+            <i class="fas fa-sign-in-alt"></i> 登录系统
+        </button>
+
+        <div class="action-buttons">
+            <button class="btn btn-register" id="registerBtn">
+                <i class="fas fa-user-plus"></i> 注册系统
+            </button>
+            <button class="btn btn-exit" id="exitBtn">
+                <i class="fas fa-power-off"></i> 退出系统
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 主界面 -->
+<div class="main-container" id="mainContainer">
+    <!-- 顶部导航栏 -->
+    <div class="top-nav">
+        <div class="user-info">
+            <div class="user-avatar">U</div>
+            <div class="user-details">
+                <h3 id="currentUser">user123</h3>
+                <span>在线</span>
+            </div>
+        </div>
+
+        <div class="nav-controls">
+            <button class="nav-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+            <button class="nav-btn">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button class="nav-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 左侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="搜索用户或群聊">
+                </div>
+            </div>
+
+            <div class="sidebar-tabs">
+                <div class="tab active" data-tab="online">
+                    <i class="fas fa-user-friends"></i>
+                    <span>在线用户</span>
+                </div>
+                <div class="tab" data-tab="recent">
+                    <i class="fas fa-comment-alt"></i>
+                    <span>最近聊天</span>
+                </div>
+            </div>
+
+            <div class="tab-content">
+                <ul class="user-list" id="userList">
+                    <!-- 用户列表会动态生成 -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- 聊天区域 -->
+        <div class="chat-area">
+            <div class="chat-header">
+                <div class="user-avatar">T</div>
+                <div class="chat-title">与 user456 的对话</div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <!-- 消息会动态生成 -->
+            </div>
+
+            <div class="message-input-area">
+                <div class="message-input-container">
+                    <textarea class="message-input" id="messageInput" placeholder="输入消息..."></textarea>
+                    <button class="send-button" id="sendMessageBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能区域 -->
+        <div class="function-area">
+            <h2 class="function-title">系统功能</h2>
+
+            <div class="function-buttons">
+                <button class="func-btn" id="onlineListBtn">
+                    <i class="fas fa-list"></i>
+                    <div>显示在线用户列表</div>
+                </button>
+
+                <button class="func-btn" id="groupChatBtn">
+                    <i class="fas fa-bullhorn"></i>
+                    <div>群发消息</div>
+                </button>
+
+                <button class="func-btn" id="privateChatBtn">
+                    <i class="fas fa-comment-dots"></i>
+                    <div>私聊消息</div>
+                </button>
+
+                <button class="func-btn" id="sendFileBtn">
+                    <i class="fas fa-file-upload"></i>
+                    <div>发送文件</div>
+                </button>
+            </div>
+
+            <div class="file-transfer">
+                <h3 class="function-title">文件传输</h3>
+                <div class="file-list" id="fileList">
+                    <!-- 文件列表会动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // DOM 元素
+    const loginContainer = document.getElementById('loginContainer');
+    const mainContainer = document.getElementById('mainContainer');
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const exitBtn = document.getElementById('exitBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userIdInput = document.getElementById('userId');
+    const passwordInput = document.getElementById('password');
+    const currentUser = document.getElementById('currentUser');
+    const userList = document.getElementById('userList');
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const sendMessageBtn = document.getElementById('sendMessageBtn');
+    const onlineListBtn = document.getElementById('onlineListBtn');
+    const groupChatBtn = document.getElementById('groupChatBtn');
+    const privateChatBtn = document.getElementById('privateChatBtn');
+    const sendFileBtn = document.getElementById('sendFileBtn');
+    const fileList = document.getElementById('fileList');
+
+    // 模拟数据
+    const onlineUsers = [
+        { id: 'user456', name: '张三', status: 'online' },
+        { id: 'user789', name: '李四', status: 'online' },
+        { id: 'user101', name: '王五', status: 'online' },
+        { id: 'user112', name: '赵六', status: 'offline' },
+        { id: 'user131', name: '钱七', status: 'online' },
+        { id: 'user151', name: '孙八', status: 'online' }
+    ];
+
+    const chatHistory = [
+        { sender: 'user123', receiver: 'user456', content: '你好！最近怎么样？', time: '10:30', type: 'sent' },
+        { sender: 'user456', receiver: 'user123', content: '我很好，谢谢！项目进展顺利吗？', time: '10:32', type: 'received' },
+        { sender: 'user123', receiver: 'user456', content: '进展很顺利，我已经完成了前端界面设计。', time: '10:35', type: 'sent' },
+        { sender: 'user456', receiver: 'user123', content: '太棒了！期待看到最终效果。', time: '10:36', type: 'received' },
+        { sender: 'user123', receiver: 'user456', content: '我稍后会发给你预览链接。', time: '10:37', type: 'sent' }
+    ];
+
+    const files = [
+        { name: '设计文档.pdf', size: '2.4 MB', sender: 'user456' },
+        { name: '项目原型图.jpg', size: '1.8 MB', sender: 'user123' },
+        { name: '需求说明书.docx', size: '3.1 MB', sender: 'user456' }
+    ];
+
+    // 初始化页面
+    function initPage() {
+        renderUserList();
+        renderChatHistory();
+        renderFileList();
+
+        // 添加事件监听器
+        loginBtn.addEventListener('click', handleLogin);
+        registerBtn.addEventListener('click', handleRegister);
+        exitBtn.addEventListener('click', handleExit);
+        logoutBtn.addEventListener('click', handleLogout);
+        sendMessageBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        onlineListBtn.addEventListener('click', showOnlineList);
+        groupChatBtn.addEventListener('click', showGroupChat);
+        privateChatBtn.addEventListener('click', showPrivateChat);
+        sendFileBtn.addEventListener('click', showFileDialog);
+
+        // 标签切换
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // 实际应用中这里会加载不同标签的内容
+            });
+        });
+    }
+
+    // 渲染用户列表
+    function renderUserList() {
+        userList.innerHTML = '';
+        onlineUsers.forEach(user => {
+            const userItem = document.createElement('li');
+            userItem.className = 'user-item';
+            if (user.id === 'user456') userItem.classList.add('active');
+
+            userItem.innerHTML = `
+                    <div class="user-status ${user.status}"></div>
+                    <div class="user-item-info">
+                        <h4>${user.name}</h4>
+                        <p>ID: ${user.id}</p>
+                    </div>
+                `;
+
+            userItem.addEventListener('click', () => {
+                document.querySelectorAll('.user-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                userItem.classList.add('active');
+                // 在实际应用中，这里会加载与该用户的聊天记录
+            });
+
+            userList.appendChild(userItem);
+        });
+    }
+
+    // 渲染聊天记录
+    function renderChatHistory() {
+        chatMessages.innerHTML = '';
+        chatHistory.forEach(msg => {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${msg.type}`;
+
+            messageDiv.innerHTML = `
+                    <div class="message-content">${msg.content}</div>
+                    <div class="message-info">
+                        <span>${msg.time}</span>
+                        <span>${msg.type === 'sent' ? '已送达' : ''}</span>
+                    </div>
+                `;
+
+            chatMessages.appendChild(messageDiv);
+        });
+
+        // 滚动到底部
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // 渲染文件列表
+    function renderFileList() {
+        fileList.innerHTML = '';
+        files.forEach(file => {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+
+            fileItem.innerHTML = `
+                    <div class="file-icon">
+                        <i class="fas fa-file"></i>
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${file.size} · 来自 ${file.sender}</div>
+                    </div>
+                `;
+
+            fileList.appendChild(fileItem);
+        });
+    }
+
+    // 处理登录
+    function handleLogin() {
+        const userId = userIdInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if (!userId || !password) {
+            alert('请输入用户ID和密码');
+            return;
+        }
+
+        // 模拟登录成功
+        currentUser.textContent = userId;
+        loginContainer.style.display = 'none';
+        mainContainer.style.display = 'flex';
+
+        // 在实际应用中，这里会调用 userClientService.checkUser(userId, password)
+    }
+
+    // 处理注册
+    function handleRegister() {
+        alert('注册功能暂未实现');
+        // 在实际应用中，这里会调用注册逻辑
+    }
+
+    // 处理退出
+    function handleExit() {
+        if (confirm('确定要退出系统吗？')) {
+            window.close();
+        }
+    }
+
+    // 处理注销
+    function handleLogout() {
+        if (confirm('确定要注销登录吗？')) {
+            mainContainer.style.display = 'none';
+            loginContainer.style.display = 'flex';
+            userIdInput.value = '';
+            passwordInput.value = '';
+        }
+    }
+
+    // 发送消息
+    function sendMessage() {
+        const content = messageInput.value.trim();
+        if (!content) return;
+
+        // 添加新消息到聊天记录
+        const newMsg = {
+            sender: 'user123',
+            receiver: 'user456',
+            content: content,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            type: 'sent'
+        };
+
+        chatHistory.push(newMsg);
+        renderChatHistory();
+
+        // 在实际应用中，这里会调用 messageClientService.sendMessageToOne(content, userId, getterId)
+
+        // 模拟回复
+        setTimeout(() => {
+            const replyMsg = {
+                sender: 'user456',
+                receiver: 'user123',
+                content: '收到你的消息了，稍后回复你。',
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                type: 'received'
+            };
+            chatHistory.push(replyMsg);
+            renderChatHistory();
+        }, 2000);
+
+        // 清空输入框
+        messageInput.value = '';
+    }
+
+    // 显示在线用户列表
+    function showOnlineList() {
+        alert('在线用户列表功能');
+        // 在实际应用中，这里会调用 userClientService.onlineFriendList()
+    }
+
+    // 显示群聊对话框
+    function showGroupChat() {
+        const message = prompt('请输入要群发的消息:');
+        if (message) {
+            alert(`群发消息: ${message}`);
+            // 在实际应用中，这里会调用 messageClientService.sendMessageToAll(message, userId)
+        }
+    }
+
+    // 显示私聊对话框
+    function showPrivateChat() {
+        const user = prompt('请输入用户ID:');
+        const message = prompt('请输入消息内容:');
+        if (user && message) {
+            alert(`发送私聊消息给 ${user}: ${message}`);
+            // 在实际应用中，这里会调用 messageClientService.sendMessageToOne(message, userId, getterId)
+        }
+    }
+
+    // 显示文件对话框
+    function showFileDialog() {
+        const user = prompt('请输入用户ID:');
+        if (user) {
+            alert(`准备发送文件给 ${user}`);
+            // 在实际应用中，这里会打开文件选择器，然后调用 fileClientService.sendFileToOne(src, dest, userId, getterId)
+        }
+    }
+
+    // 页面加载完成后初始化
+    window.addEventListener('DOMContentLoaded', initPage);
+</script>
+</body>
+</html>

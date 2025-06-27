@@ -3,8 +3,8 @@ package com.qq.qqcommon;
 /**
  * 表示消息类型
  */
+
 public interface MessageType {
-    //老师解读
     //1. 在接口中定义了一些常量
     //2. 不同的常量的值，表示不同的消息类型.
     String MESSAGE_LOGIN_SUCCESS = "1"; //表示登录成功

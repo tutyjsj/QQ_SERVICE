@@ -2,9 +2,12 @@ package com.qq.qqserver.service;
 
 import com.qq.qqcommon.Message;
 import com.qq.qqcommon.MessageType;
-import com.qq.qqserver.service.ManageClientThreads;
-import com.qq.qqserver.service.ServerConnectClientThread;
 import com.qq.utils.Utility;
+
+import java.io.ObjectOutputStream;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Scanner;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -41,7 +44,7 @@ public class SendNewsToAllService implements Runnable {
 
             Iterator<String> iterator = hm.keySet().iterator();
             while (iterator.hasNext()) {
-                String onLineUserId = iterator.next();
+                String onLineUserId = iterator.next().toString();
                 try {
                     ObjectOutputStream oos =
                             new ObjectOutputStream(hm.get(onLineUserId).getSocket().getOutputStream());

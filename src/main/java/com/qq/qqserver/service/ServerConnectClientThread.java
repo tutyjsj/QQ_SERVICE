@@ -2,7 +2,12 @@ package com.qq.qqserver.service;
 
 import com.qq.qqcommon.Message;
 import com.qq.qqcommon.MessageType;
-import com.qq.qqserver.service.ManageClientThreads;
+
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,8 +17,8 @@ import java.util.Iterator;
 
 public class ServerConnectClientThread extends Thread {
 
-    private final Socket socket;
-    private final String userId;//连接到服务端的用户id
+    private Socket socket;
+    private String userId;//连接到服务端的用户id
 
     public ServerConnectClientThread(Socket socket, String userId) {
         this.socket = socket;
@@ -67,7 +72,7 @@ public class ServerConnectClientThread extends Thread {
                     while (iterator.hasNext()) {
 
                         //取出在线用户id
-                        String onLineUserId = iterator.next();
+                        String onLineUserId = iterator.next().toString();
 
                         if (!onLineUserId.equals(message.getSender())) {//排除群发消息的这个用户
 
